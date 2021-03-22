@@ -10,7 +10,14 @@ const theme = {
     ...chakraTheme.colors,
     black: "#16161D",
   },
-  fonts,
+  fonts: {
+    heading: "Open Sans",
+    body: "Raleway",
+    label: "Raleway",
+    input: "Raleway",
+    placeholder: "Raleway",
+    textarea: "Raleway",
+  },
   breakpoints,
   icons: {
     ...chakraTheme.icons,

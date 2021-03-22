@@ -9,6 +9,7 @@ import { withUrqlClient } from "next-urql";
 import { toErrorsMap } from "../util/toErrorsMap";
 import { createUrqlClient } from "../urql/createUrqlClient";
 import { Layout } from "../components/Layout";
+import Footer from "../components/Footer";
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -54,6 +55,7 @@ const Login: React.FC<{}> = ({}) => {
           )}
         </Formik>
       </Wrapper>
+      <Footer/>
     </>
   );
 };

@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Heading, Flex, Text, Button, Link } from "@chakra-ui/core";
-import { useRouter } from "next/router";
 import { useMeQuery } from "../generated/graphql";
 import { isServer } from "../util/isServer";
 import NextLink from "next/link";
