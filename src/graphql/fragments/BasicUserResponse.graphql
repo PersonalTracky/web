@@ -1,0 +1,10 @@
+fragment BasicUserResponse on UserResponse {
+  user {
+    id
+    username
+  }
+  errors {
+    field
+    message
+  }
+}
