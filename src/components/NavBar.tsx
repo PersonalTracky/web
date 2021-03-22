@@ -17,8 +17,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <>
         <Box display={{ md: "block" }} mt={{ base: 4, md: 0 }} mr={2}>
-          {/* TODO: route to register when implemented register page*/}
-          <NextLink href="/">
+          <NextLink href="/register">
             <Button
               as={Link}
               bg="gray.800"

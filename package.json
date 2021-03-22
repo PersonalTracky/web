@@ -15,6 +15,7 @@
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^10.0.27",
     "@urql/exchange-graphcache": "^3.0.2",
+    "axios": "^0.21.1",
     "emotion-theming": "^10.0.27",
     "formik": "^2.1.5",
     "framer-motion": "^4.0.0",
@@ -25,6 +26,7 @@
     "next-apollo": "^5.0.0",
     "next-urql": "^1.1.0",
     "react": "^16.12.0",
+    "react-aws-s3-typescript": "^1.0.1",
     "react-dom": "^16.12.0",
     "react-is": "^16.13.1",
     "urql": "^1.10.0"
@@ -37,5 +39,10 @@
     "@graphql-codegen/typescript-urql": "^2.0.0",
     "@types/node": "^14.0.27",
     "typescript": "^3.9.7"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   }
 }

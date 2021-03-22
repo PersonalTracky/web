@@ -1,0 +1,24 @@
+mutation Register(
+  $username: String!
+  $email: String!
+  $password: String!
+  $profilePictureUrl: String!
+) {
+  register(
+    options: {
+      username: $username
+      email: $email
+      password: $password
+      profilePictureUrl: $profilePictureUrl
+    }
+  ) {
+    errors {
+      field
+      message
+    }
+    user {
+      id
+      username
+    }
+  }
+}
