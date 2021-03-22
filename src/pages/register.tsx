@@ -9,12 +9,6 @@ import { InputField } from "../components/InputField";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
 import { useRegisterMutation } from "../generated/graphql";
-import {
-  REACT_APP_ACCESS_ID,
-  REACT_APP_ACCESS_KEY,
-  REACT_APP_BUCKET_NAME,
-  REACT_APP_REGION,
-} from "../secret";
 import { createUrqlClient } from "../urql/createUrqlClient";
 import { toErrorsMap } from "../util/toErrorsMap";
 
@@ -35,35 +29,50 @@ const Register: React.FC<registerProps> = ({}) => {
             file: null,
           }}
           onSubmit={async (values, { setErrors }) => {
-            const extension = values.file.name.split(".").pop();
-            const s3 = new AWS.S3({
-              accessKeyId: REACT_APP_ACCESS_ID,
-              secretAccessKey: REACT_APP_ACCESS_KEY,
-              region: REACT_APP_REGION,
-            });
-            const params = {
-              Bucket: REACT_APP_BUCKET_NAME,
-              Key: "pp_" + values.username + "." + extension,
-              Body: values.file,
-            };
-
-            s3.upload(params, async function (err, data) {
-              if (err) {
-                setErrors(toErrorsMap(err));
-              }
-              let s3Url = data.Location;
+            // if user did not select a profile image, set it to default
+            if (values.file) {
+              const extension = values.file.name.split(".").pop();
+              const s3 = new AWS.S3({
+                accessKeyId: process.env.NEXT_PUBLIC_REACT_APP_ACCESS_ID,
+                secretAccessKey: process.env.NEXT_PUBLIC_REACT_APP_ACCESS_KEY,
+                region: process.env.NEXT_PUBLIC_REACT_APP_REGION,
+              });
+              const params = {
+                Bucket: process.env.NEXT_PUBLIC_REACT_APP_BUCKET_NAME,
+                Key: "profile_pictures/pp_" + values.username + "." + extension,
+                Body: values.file,
+              };
+              s3.upload(params, async function (err, data) {
+                if (err) {
+                  setErrors(toErrorsMap(err));
+                }
+                
+                const url = data.Location;
+                const response = await register({
+                  username: values.username,
+                  email: values.email,
+                  password: values.password,
+                  profilePictureUrl: url,
+                });
+                if (response.data?.register.errors) {
+                  setErrors(toErrorsMap(response.data.register.errors));
+                } else if (response.data?.register.user) {
+                  router.push("/");
+                }
+              });
+            } else {
               const response = await register({
                 username: values.username,
                 email: values.email,
                 password: values.password,
-                profilePictureUrl: s3Url,
+                profilePictureUrl: process.env.NEXT_PUBLIC_DEFAULT_IMAGE_URL,
               });
               if (response.data?.register.errors) {
                 setErrors(toErrorsMap(response.data.register.errors));
               } else if (response.data?.register.user) {
                 router.push("/");
               }
-            });
+            }
           }}
         >
           {({ isSubmitting, setFieldValue }) => (
