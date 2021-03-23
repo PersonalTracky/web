@@ -2,7 +2,6 @@ import { cacheExchange } from "@urql/exchange-graphcache";
 import Router from "next/router";
 import { createClient, dedupExchange, Exchange, fetchExchange } from "urql";
 import { pipe, tap } from "wonka";
-import { API_URL } from "../constants";
 import {
   LoginMutation,
   MeDocument,
@@ -29,7 +28,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
     cookie = ctx?.req?.headers?.cookie;
   }
   return {
-    url: API_URL as string,
+    url: process.env.NEXT_PUBLIC_DEFAULT_API_URL as string,
     fetchOptions: {
       credentials: "include" as const,
       headers: cookie
