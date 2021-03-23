@@ -46,7 +46,6 @@ const Register: React.FC<registerProps> = ({}) => {
                 if (err) {
                   setErrors(toErrorsMap(err));
                 }
-                
                 const url = data.Location;
                 const response = await register({
                   username: values.username,
