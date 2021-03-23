@@ -1,5 +1,6 @@
 import { Box, Button } from "@chakra-ui/core";
 import AWS from "aws-sdk";
+import { Console } from "console";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
@@ -30,6 +31,9 @@ const Register: React.FC<registerProps> = ({}) => {
           }}
           onSubmit={async (values, { setErrors }) => {
             // if user did not select a profile image, set it to default
+
+            let profilePictureUrl: string;
+
             if (values.file) {
               const extension = values.file.name.split(".").pop();
               const s3 = new AWS.S3({
@@ -42,35 +46,32 @@ const Register: React.FC<registerProps> = ({}) => {
                 Key: "profile_pictures/pp_" + values.username + "." + extension,
                 Body: values.file,
               };
-              s3.upload(params, async function (err, data) {
-                if (err) {
-                  setErrors(toErrorsMap(err));
-                }
-                const url = data.Location;
-                const response = await register({
-                  username: values.username,
-                  email: values.email,
-                  password: values.password,
-                  profilePictureUrl: url,
+              const upload = (parameters: AWS.S3.PutObjectRequest) => {
+                return new Promise<string>((resolve, reject) => {
+                  s3.upload(parameters, function (err, data) {
+                    if (err) {
+                      reject(err);
+                    }
+                    resolve(data.Location);
+                  });
                 });
-                if (response.data?.register.errors) {
-                  setErrors(toErrorsMap(response.data.register.errors));
-                } else if (response.data?.register.user) {
-                  router.push("/");
-                }
-              });
+              };
+              profilePictureUrl = await upload(params);
             } else {
-              const response = await register({
-                username: values.username,
-                email: values.email,
-                password: values.password,
-                profilePictureUrl: process.env.NEXT_PUBLIC_DEFAULT_IMAGE_URL,
-              });
-              if (response.data?.register.errors) {
-                setErrors(toErrorsMap(response.data.register.errors));
-              } else if (response.data?.register.user) {
-                router.push("/");
-              }
+              profilePictureUrl = process.env.NEXT_PUBLIC_DEFAULT_IMAGE_URL;
+            }
+
+            console.log(profilePictureUrl);
+            const response = await register({
+              username: values.username,
+              email: values.email,
+              password: values.password,
+              profilePictureUrl: profilePictureUrl,
+            });
+            if (response.data?.register.errors) {
+              setErrors(toErrorsMap(response.data.register.errors));
+            } else if (response.data?.register.user) {
+              router.push("/");
             }
           }}
         >
