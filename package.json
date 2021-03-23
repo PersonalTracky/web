@@ -16,6 +16,7 @@
     "@emotion/core": "^10.0.27",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^10.0.27",
+    "@svgr/webpack": "^5.5.0",
     "@urql/exchange-graphcache": "^3.0.2",
     "axios": "^0.21.1",
     "emotion-theming": "^10.0.27",
