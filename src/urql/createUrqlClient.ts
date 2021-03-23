@@ -1,6 +1,6 @@
 import { cacheExchange } from "@urql/exchange-graphcache";
 import Router from "next/router";
-import { createClient, dedupExchange, Exchange, fetchExchange } from "urql";
+import { dedupExchange, Exchange, fetchExchange } from "urql";
 import { pipe, tap } from "wonka";
 import {
   LoginMutation,

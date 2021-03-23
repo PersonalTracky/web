@@ -30,9 +30,22 @@ export type User = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  forgotPassword: Scalars['Boolean'];
+  changePassword: UserResponse;
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+};
+
+
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String'];
+  token: Scalars['String'];
 };
 
 
@@ -77,7 +90,7 @@ export type LoginMutation = (
     { __typename?: 'UserResponse' }
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username'>
+      & Pick<User, 'id' | 'username' | 'profilePictureUrl'>
     )>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
@@ -102,7 +115,7 @@ export type RegisterMutation = (
       & Pick<FieldError, 'field' | 'message'>
     )>>, user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username'>
+      & Pick<User, 'id' | 'username' | 'profilePictureUrl'>
     )> }
   ) }
 );
@@ -114,7 +127,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username'>
+    & Pick<User, 'id' | 'username' | 'profilePictureUrl'>
   )> }
 );
 
@@ -125,6 +138,7 @@ export const LoginDocument = gql`
     user {
       id
       username
+      profilePictureUrl
     }
     errors {
       field
@@ -147,6 +161,7 @@ export const RegisterDocument = gql`
     user {
       id
       username
+      profilePictureUrl
     }
   }
 }
@@ -160,6 +175,7 @@ export const MeDocument = gql`
   me {
     id
     username
+    profilePictureUrl
   }
 }
     `;

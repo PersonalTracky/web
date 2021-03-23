@@ -1,6 +1,5 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import { Box, Button, Link, Flex } from "@chakra-ui/core";
 import { Wrapper } from "../components/Wrapper";
 import { InputField } from "../components/InputField";
 import { useLoginMutation } from "../generated/graphql";
@@ -10,6 +9,7 @@ import { toErrorsMap } from "../util/toErrorsMap";
 import { createUrqlClient } from "../urql/createUrqlClient";
 import { Layout } from "../components/Layout";
 import Footer from "../components/Footer";
+import { Box, Button } from "@chakra-ui/core";
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -48,14 +48,22 @@ const Login: React.FC<{}> = ({}) => {
                   type="password"
                 />
               </Box>
-              <Button mt={4} type="submit" isLoading={isSubmitting}>
+              <Button
+                mt={4}
+                type="submit"
+                isLoading={isSubmitting}
+                bg="gray.800"
+                border="1px"
+                _hover={{ bg: "gray.500" }}
+                color="white"
+              >
                 Login
               </Button>
             </Form>
           )}
         </Formik>
       </Wrapper>
-      <Footer/>
+      <Footer />
     </>
   );
 };

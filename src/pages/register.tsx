@@ -102,16 +102,22 @@ const Register: React.FC<registerProps> = ({}) => {
                 id="file"
                 name="file"
                 type="file"
+                style={{
+                  marginTop: "2vh",
+                }}
                 onChange={(event) => {
                   setFieldValue("file", event.currentTarget.files[0]);
                 }}
                 className="form-control"
               />
               <Button
-                mt={4}
+                mt={5}
                 type="submit"
                 isLoading={isSubmitting}
-                variantColor="teal"
+                bg="gray.800"
+                border="1px"
+                _hover={{ bg: "gray.500" }}
+                color="white"
               >
                 Register
               </Button>

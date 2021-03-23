@@ -19,6 +19,7 @@ mutation Register(
     user {
       id
       username
+      profilePictureUrl
     }
   }
 }
