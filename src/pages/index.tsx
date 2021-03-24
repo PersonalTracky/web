@@ -11,14 +11,19 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/core";
 import { GridItem } from "@chakra-ui/layout";
 import { Form, Formik } from "formik";
 import { motion } from "framer-motion";
 import { withUrqlClient } from "next-urql";
-import Head from 'next/head';
+import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -27,7 +32,11 @@ import Footer from "../components/Footer";
 import { InputField } from "../components/InputField";
 import { Layout } from "../components/Layout";
 import { Wrapper } from "../components/Wrapper";
-import { useLoginMutation, useMeQuery } from "../generated/graphql";
+import {
+  useForgotPasswordMutation,
+  useLoginMutation,
+  useMeQuery,
+} from "../generated/graphql";
 import { createUrqlClient } from "../urql/createUrqlClient";
 import { toErrorsMap } from "../util/toErrorsMap";
 
@@ -44,6 +53,7 @@ const Index = () => {
   const [{ data }] = useMeQuery();
   const router = useRouter();
   const [, login] = useLoginMutation();
+  const [, forgotPassword] = useForgotPasswordMutation();
   let body = null;
   if (!data?.me) {
     body = (
@@ -117,52 +127,94 @@ const Index = () => {
               <ModalHeader>Login</ModalHeader>
               <ModalCloseButton />
               <ModalBody pb={6}>
-                <Wrapper variant="small">
-                  <Formik
-                    initialValues={{ usernameOrEmail: "", password: "" }}
-                    onSubmit={async (values, { setErrors }) => {
-                      const response = await login(values);
-                      if (response.data?.login.errors) {
-                        setErrors(toErrorsMap(response.data.login.errors));
-                      } else if (response.data?.login.user) {
-                        if (typeof router.query.next === "string") {
-                          router.push(router.query.next);
-                        } else {
-                          router.push("/");
-                        }
-                      }
-                    }}
-                  >
-                    {({ isSubmitting }) => (
-                      <Form>
-                        <InputField
-                          name="usernameOrEmail"
-                          placeholder="username or email"
-                          label="Username or Email"
-                        />
-                        <Box mt={4}>
-                          <InputField
-                            name="password"
-                            placeholder="password"
-                            label="Password"
-                            type="password"
-                          />
-                        </Box>
-                        <Button
-                          mt={4}
-                          type="submit"
-                          isLoading={isSubmitting}
-                          bg="gray.800"
-                          border="1px"
-                          _hover={{ bg: "gray.500" }}
-                          color="white"
+                <Tabs isFitted variant="enclosed">
+                  <TabList mb="1em">
+                    <Tab>Login</Tab>
+                    <Tab>Forgot password?</Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel>
+                      <Wrapper variant="small">
+                        <Formik
+                          initialValues={{ usernameOrEmail: "", password: "" }}
+                          onSubmit={async (values, { setErrors }) => {
+                            const response = await login(values);
+                            if (response.data?.login.errors) {
+                              setErrors(
+                                toErrorsMap(response.data.login.errors)
+                              );
+                            } else if (response.data?.login.user) {
+                              if (typeof router.query.next === "string") {
+                                router.push(router.query.next);
+                              } else {
+                                router.push("/");
+                              }
+                            }
+                          }}
                         >
-                          Login
-                        </Button>
-                      </Form>
-                    )}
-                  </Formik>
-                </Wrapper>
+                          {({ isSubmitting }) => (
+                            <Form>
+                              <InputField
+                                name="usernameOrEmail"
+                                placeholder="Username or email"
+                                label="Username or Email"
+                              />
+                              <Box mt={4}>
+                                <InputField
+                                  name="password"
+                                  placeholder="Password"
+                                  label="Password"
+                                  type="password"
+                                />
+                              </Box>
+                              <Button
+                                mt={4}
+                                type="submit"
+                                isLoading={isSubmitting}
+                                bg="gray.800"
+                                border="1px"
+                                _hover={{ bg: "gray.500" }}
+                                color="white"
+                              >
+                                Login
+                              </Button>
+                            </Form>
+                          )}
+                        </Formik>
+                      </Wrapper>
+                    </TabPanel>
+                    <TabPanel>
+                      <Formik
+                        initialValues={{ email: "" }}
+                        onSubmit={async (values, {}) => {
+                          await forgotPassword(values);
+                          onClose();
+                        }}
+                      >
+                        {({ isSubmitting }) => (
+                          <Form>
+                            <InputField
+                              name="email"
+                              placeholder="email"
+                              label="Email"
+                            />
+                            <Button
+                              mt={4}
+                              type="submit"
+                              isLoading={isSubmitting}
+                              bg="gray.800"
+                              border="1px"
+                              _hover={{ bg: "gray.500" }}
+                              color="white"
+                            >
+                              Reset
+                            </Button>
+                          </Form>
+                        )}
+                      </Formik>
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
               </ModalBody>
             </ModalContent>
           </ModalOverlay>
@@ -174,9 +226,9 @@ const Index = () => {
   }
   return (
     <>
-    <Head>
-      <title>Tracky</title>
-    </Head>
+      <Head>
+        <title>Tracky</title>
+      </Head>
       <Layout />
       {body}
       <Footer />

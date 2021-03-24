@@ -1,22 +1,15 @@
 import {
   Avatar,
-
-
   Flex,
   Heading,
   Icon,
-
-
-
-
-
-  Image, Link,
+  Image,
+  Link,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-
-  Text
+  Text,
 } from "@chakra-ui/core";
 import NextLink from "next/link";
 import React from "react";
@@ -70,9 +63,14 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
                 <Text ml={2}>My notes</Text>
               </Flex>
             </MenuItem>
-            <MenuItem _focus={{ bg: "#1f6feb" }} onClick={() => {logout()}}>
+            <MenuItem
+              _focus={{ bg: "#1f6feb" }}
+              onClick={() => {
+                logout();
+              }}
+            >
               <Flex alignItems="center" justify="space-between">
-                <Icon name="small-close"/>
+                <Icon name="small-close" />
                 <Text ml={2}>Log out</Text>
               </Flex>
             </MenuItem>
