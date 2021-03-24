@@ -29,36 +29,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 
   let body = null;
 
-  if (!data?.me) {
-    body = (
-      <Flex alignItems="center" justify="space-between">
-        <Box display={{ md: "block" }} mt={{ base: 4, md: 0 }} mr={2}>
-          <NextLink href="/register">
-            <Button
-              as={Link}
-              bg="gray.800"
-              border="1px"
-              _hover={{ bg: "gray.500" }}
-            >
-              Create account
-            </Button>
-          </NextLink>
-        </Box>
-        <Box display={{ md: "block" }} mt={{ base: 4, md: 0 }} mr={2}>
-          <NextLink href="/login">
-            <Button
-              as={Link}
-              bg="gray.800"
-              border="1px"
-              _hover={{ bg: "gray.500" }}
-            >
-              Sign in
-            </Button>
-          </NextLink>
-        </Box>
-      </Flex>
-    );
-  } else {
+  if (data?.me) {
     body = (
       <>
         <Menu>
