@@ -18,6 +18,7 @@ import { GridItem } from "@chakra-ui/layout";
 import { Form, Formik } from "formik";
 import { motion } from "framer-motion";
 import { withUrqlClient } from "next-urql";
+import Head from 'next/head';
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -173,6 +174,9 @@ const Index = () => {
   }
   return (
     <>
+    <Head>
+      <title>Tracky</title>
+    </Head>
       <Layout />
       {body}
       <Footer />

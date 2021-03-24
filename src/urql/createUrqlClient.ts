@@ -4,6 +4,7 @@ import { dedupExchange, Exchange, fetchExchange } from "urql";
 import { pipe, tap } from "wonka";
 import {
   LoginMutation,
+  LogoutMutation,
   MeDocument,
   MeQuery,
   RegisterMutation,
@@ -72,6 +73,14 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                     };
                   }
                 }
+              );
+            },
+            logout: (_result, args, cache, info) => {
+              updateQueryWrapper<LogoutMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                () => ({ me: null })
               );
             },
           },

@@ -10,6 +10,7 @@ import { Wrapper } from "../components/Wrapper";
 import { useRegisterMutation } from "../generated/graphql";
 import { createUrqlClient } from "../urql/createUrqlClient";
 import { toErrorsMap } from "../util/toErrorsMap";
+import Head from 'next/head';
 
 interface registerProps {}
 
@@ -18,6 +19,9 @@ const Register: React.FC<registerProps> = ({}) => {
   const [, register] = useRegisterMutation();
   return (
     <>
+     <Head>
+      <title>Tracky</title>
+    </Head>
       <NavBar />
       <Wrapper variant="small">
         <Formik
