@@ -1,3 +1,7 @@
+[data-reactroot] {
+  height: 100% !important;
+}
+
 html,
 body {
   height: 100%;
@@ -22,7 +26,7 @@ body {
 
 .footer {
   position: fixed;
-  width:100%;
+  width: 100%;
   flex-shrink: 0;
   text-align: center;
   background: #30363d;
