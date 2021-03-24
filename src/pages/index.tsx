@@ -20,6 +20,7 @@ import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import Footer from "../components/Footer";
 import { InputField } from "../components/InputField";
 import { Layout } from "../components/Layout";
 import { Wrapper } from "../components/Wrapper";
@@ -141,6 +142,7 @@ const Index = () => {
     <>
       <Layout />
       {body}
+      <Footer/>
     </>
   );
 };
