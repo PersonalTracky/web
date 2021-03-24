@@ -1,11 +1,9 @@
 import { Box, Button } from "@chakra-ui/core";
 import AWS from "aws-sdk";
-import { Console } from "console";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
-import Footer from "../components/Footer";
 import { InputField } from "../components/InputField";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
@@ -125,7 +123,6 @@ const Register: React.FC<registerProps> = ({}) => {
           )}
         </Formik>
       </Wrapper>
-      <Footer />
     </>
   );
 };
