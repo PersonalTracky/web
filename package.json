@@ -17,6 +17,7 @@
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^10.0.27",
     "@svgr/webpack": "^5.5.0",
+    "@types/styled-components": "^5.1.9",
     "@urql/exchange-graphcache": "^3.0.2",
     "axios": "^0.21.1",
     "emotion-theming": "^10.0.27",
@@ -34,6 +35,7 @@
     "react-dom": "^16.12.0",
     "react-is": "^16.13.1",
     "react-transition-group": "^4.4.1",
+    "styled-components": "^5.2.1",
     "urql": "^1.10.0"
   },
   "devDependencies": {
