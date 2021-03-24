@@ -37,7 +37,7 @@ const Index = () => {
   let body = null;
   if (!data?.me) {
     body = (
-      <Flex alignItems="center" justify="center" ml={10} mt={40}>
+      <Flex alignItems="center" justify="center" ml={10} mt="5%">
         <Grid templateRows="repeat(2, 1fr)">
           <GridItem rowSpan={1} mb={15}>
             <Heading as="h1" size="xl" letterSpacing={"-.1rem"} mr={20}>
