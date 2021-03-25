@@ -16,6 +16,13 @@ export type Query = {
   __typename?: 'Query';
   ping: Scalars['String'];
   me?: Maybe<User>;
+  notes: PaginatedNotes;
+};
+
+
+export type QueryNotesArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 export type User = {
@@ -28,6 +35,21 @@ export type User = {
   updatedAt: Scalars['String'];
 };
 
+export type PaginatedNotes = {
+  __typename?: 'PaginatedNotes';
+  notes: Array<Note>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type Note = {
+  __typename?: 'Note';
+  id: Scalars['Float'];
+  text: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  creatorId: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   forgotPassword: Scalars['Boolean'];
@@ -35,6 +57,9 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  createNote: Note;
+  updateNote?: Maybe<Note>;
+  deleteNote: Scalars['Boolean'];
 };
 
 
@@ -59,6 +84,22 @@ export type MutationLoginArgs = {
   usernameOrEmail: Scalars['String'];
 };
 
+
+export type MutationCreateNoteArgs = {
+  input: NoteInput;
+};
+
+
+export type MutationUpdateNoteArgs = {
+  text: Scalars['String'];
+  id: Scalars['Int'];
+};
+
+
+export type MutationDeleteNoteArgs = {
+  id: Scalars['Float'];
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -78,6 +119,10 @@ export type UsernamePasswordInput = {
   profilePictureUrl: Scalars['String'];
 };
 
+export type NoteInput = {
+  text: Scalars['String'];
+};
+
 export type ChangePasswordMutationVariables = Exact<{
   token: Scalars['String'];
   newPassword: Scalars['String'];
@@ -95,6 +140,19 @@ export type ChangePasswordMutation = (
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
     )>> }
+  ) }
+);
+
+export type CreateNoteMutationVariables = Exact<{
+  input: NoteInput;
+}>;
+
+
+export type CreateNoteMutation = (
+  { __typename?: 'Mutation' }
+  & { createNote: (
+    { __typename?: 'Note' }
+    & Pick<Note, 'id' | 'createdAt' | 'updatedAt' | 'text' | 'creatorId'>
   ) }
 );
 
@@ -169,6 +227,24 @@ export type MeQuery = (
   )> }
 );
 
+export type NotesQueryVariables = Exact<{
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+}>;
+
+
+export type NotesQuery = (
+  { __typename?: 'Query' }
+  & { notes: (
+    { __typename?: 'PaginatedNotes' }
+    & Pick<PaginatedNotes, 'hasMore'>
+    & { notes: Array<(
+      { __typename?: 'Note' }
+      & Pick<Note, 'id' | 'text' | 'createdAt'>
+    )> }
+  ) }
+);
+
 
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($token: String!, $newPassword: String!) {
@@ -188,6 +264,21 @@ export const ChangePasswordDocument = gql`
 
 export function useChangePasswordMutation() {
   return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
+export const CreateNoteDocument = gql`
+    mutation CreateNote($input: NoteInput!) {
+  createNote(input: $input) {
+    id
+    createdAt
+    updatedAt
+    text
+    creatorId
+  }
+}
+    `;
+
+export function useCreateNoteMutation() {
+  return Urql.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument);
 };
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
@@ -257,4 +348,20 @@ export const MeDocument = gql`
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const NotesDocument = gql`
+    query Notes($cursor: String, $limit: Int!) {
+  notes(cursor: $cursor, limit: $limit) {
+    notes {
+      id
+      text
+      createdAt
+    }
+    hasMore
+  }
+}
+    `;
+
+export function useNotesQuery(options: Omit<Urql.UseQueryArgs<NotesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<NotesQuery>({ query: NotesDocument, ...options });
 };

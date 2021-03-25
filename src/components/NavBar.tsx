@@ -12,6 +12,7 @@ import {
   Text,
 } from "@chakra-ui/core";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../util/isServer";
@@ -19,6 +20,7 @@ import { isServer } from "../util/isServer";
 interface NavBarProps {}
 
 const NavBar: React.FC<NavBarProps> = ({}) => {
+  const router = useRouter();
   const [, logout] = useLogoutMutation();
   const [{ data }] = useMeQuery({
     pause: isServer(),
@@ -48,7 +50,9 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
             <MenuItem _focus={{ bg: "#1f6feb" }}>
               <Flex alignItems="center" justify="space-between">
                 <Icon name="settings" />
-                <Text ml={2}>Logged in as {data?.me.username}</Text>
+                <NextLink href="/profile">
+                  <Link ml={2}>Logged in as {data?.me.username}</Link>
+                </NextLink>
               </Flex>
             </MenuItem>
             <MenuItem _focus={{ bg: "#1f6feb" }}>
@@ -57,16 +61,11 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
                 <Text ml={2}>My categories</Text>
               </Flex>
             </MenuItem>
-            <MenuItem _focus={{ bg: "#1f6feb" }}>
-              <Flex alignItems="center" justify="space-between">
-                <Icon name="view" />
-                <Text ml={2}>My notes</Text>
-              </Flex>
-            </MenuItem>
             <MenuItem
               _focus={{ bg: "#1f6feb" }}
               onClick={() => {
                 logout();
+                router.push("/");
               }}
             >
               <Flex alignItems="center" justify="space-between">

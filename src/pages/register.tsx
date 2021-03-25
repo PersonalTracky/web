@@ -1,5 +1,4 @@
 import { Box, Button } from "@chakra-ui/core";
-import AWS from "aws-sdk";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
@@ -10,7 +9,8 @@ import { Wrapper } from "../components/Wrapper";
 import { useRegisterMutation } from "../generated/graphql";
 import { createUrqlClient } from "../urql/createUrqlClient";
 import { toErrorsMap } from "../util/toErrorsMap";
-import Head from 'next/head';
+import Head from "next/head";
+import { uploadProfilePicture } from "../util/uploadProfilePicture";
 
 interface registerProps {}
 
@@ -19,9 +19,9 @@ const Register: React.FC<registerProps> = ({}) => {
   const [, register] = useRegisterMutation();
   return (
     <>
-     <Head>
-      <title>Tracky</title>
-    </Head>
+      <Head>
+        <title>Tracky</title>
+      </Head>
       <NavBar />
       <Wrapper variant="small">
         <Formik
@@ -32,38 +32,7 @@ const Register: React.FC<registerProps> = ({}) => {
             file: null,
           }}
           onSubmit={async (values, { setErrors }) => {
-            // if user did not select a profile image, set it to default
-
-            let profilePictureUrl: string;
-
-            if (values.file) {
-              const extension = values.file.name.split(".").pop();
-              const s3 = new AWS.S3({
-                accessKeyId: process.env.NEXT_PUBLIC_REACT_APP_ACCESS_ID,
-                secretAccessKey: process.env.NEXT_PUBLIC_REACT_APP_ACCESS_KEY,
-                region: process.env.NEXT_PUBLIC_REACT_APP_REGION,
-              });
-              const params = {
-                Bucket: process.env.NEXT_PUBLIC_REACT_APP_BUCKET_NAME,
-                Key: "profile_pictures/pp_" + values.username + "." + extension,
-                Body: values.file,
-              };
-              const upload = (parameters: AWS.S3.PutObjectRequest) => {
-                return new Promise<string>((resolve, reject) => {
-                  s3.upload(parameters, function (err, data) {
-                    if (err) {
-                      reject(err);
-                    }
-                    resolve(data.Location);
-                  });
-                });
-              };
-              profilePictureUrl = await upload(params);
-            } else {
-              profilePictureUrl = process.env.NEXT_PUBLIC_DEFAULT_IMAGE_URL;
-            }
-
-            console.log(profilePictureUrl);
+            let profilePictureUrl: string = await uploadProfilePicture(values);
             const response = await register({
               username: values.username,
               email: values.email,
