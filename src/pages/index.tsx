@@ -112,9 +112,8 @@ const Index = () => {
         </Grid>
         <Box size="2xs">
           <Image
-            src="https://infrastack-trackybucketb34fbe41-xkf8yusdsf2c.s3-eu-west-1.amazonaws.com/static/notebook.svg"
+            src="/notebook.svg"
             alt="notebook"
-            whileTap={{ scale: 0.9 }}
             drag={true}
             dragConstraints={{ left: 0, right: 100, top: 0, bottom: 50 }}
             initial={{ opacity: 0, y: -100 }}
@@ -228,6 +227,7 @@ const Index = () => {
     <>
       <Head>
         <title>Tracky</title>
+        <link rel="shortcut icon" href="/Logo.svg" />
       </Head>
       <Layout />
       {body}
@@ -236,4 +236,4 @@ const Index = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Index);
+export default withUrqlClient(createUrqlClient, { ssr: true })(Index);

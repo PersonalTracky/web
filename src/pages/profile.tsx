@@ -1,9 +1,10 @@
 import { Button, Flex, Image } from "@chakra-ui/core";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
+import Head from "next/head";
 import React from "react";
 import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import NoteBlock from "../components/NotesBlock";
 import { Wrapper } from "../components/Wrapper";
 import { useMeQuery } from "../generated/graphql";
@@ -78,6 +79,10 @@ const Profile: React.FC<ProfileProps> = ({}) => {
   }
   return (
     <>
+      <Head>
+        <title>Tracky</title>
+        <link rel="shortcut icon" href="/Logo.svg" />
+      </Head>
       <NavBar />
       {body}
       <Footer />

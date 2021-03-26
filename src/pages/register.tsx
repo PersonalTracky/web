@@ -4,7 +4,7 @@ import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import { InputField } from "../components/InputField";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import { Wrapper } from "../components/Wrapper";
 import { useRegisterMutation } from "../generated/graphql";
 import { createUrqlClient } from "../urql/createUrqlClient";
@@ -21,6 +21,7 @@ const Register: React.FC<registerProps> = ({}) => {
     <>
       <Head>
         <title>Tracky</title>
+        <link rel="shortcut icon" href="/Logo.svg" />
       </Head>
       <NavBar />
       <Wrapper variant="small">

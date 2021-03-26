@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import { InputField } from "../../components/InputField";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../components/NavBar/NavBar";
 import { Wrapper } from "../../components/Wrapper";
 import { useChangePasswordMutation } from "../../generated/graphql";
 import { createUrqlClient } from "../../urql/createUrqlClient";

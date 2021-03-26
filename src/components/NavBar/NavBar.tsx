@@ -3,7 +3,6 @@ import {
   Flex,
   Heading,
   Icon,
-  Image,
   Link,
   Menu,
   MenuButton,
@@ -14,8 +13,9 @@ import {
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { useLogoutMutation, useMeQuery } from "../generated/graphql";
-import { isServer } from "../util/isServer";
+import { useLogoutMutation, useMeQuery } from "../../generated/graphql";
+import { isServer } from "../../util/isServer";
+import { Image } from "./Image";
 
 interface NavBarProps {}
 
@@ -35,7 +35,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
           <MenuButton mr={10}>
             <Flex alignItems="center">
               <Avatar
-                size="sm"
+                size="md"
                 name={data.me?.username}
                 src={data.me?.profilePictureUrl}
               />
@@ -90,24 +90,26 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
     >
       <Flex alignItems="center" justify="space-evenly">
         <Flex alignItems="center" justify="space-evenly">
-          <Image
-            size="50px"
-            src="https://infrastack-trackybucketb34fbe41-xkf8yusdsf2c.s3-eu-west-1.amazonaws.com/static/logo.png"
-            alt="logo"
-          />
-          <Heading as="h1" size="md" letterSpacing={"-.1rem"} ml={1}>
-            <NextLink href="/">
-              <Link>Tracky</Link>
-            </NextLink>
-          </Heading>
+          <div>
+            <Image
+              whileTap={{ scale: 0.9 }}
+              src="/logo.svg"
+              alt="logo"
+              height={65}
+              width={72}
+              onClick={() => {
+                router.push("/");
+              }}
+            />
+          </div>
         </Flex>
         <Flex
           alignItems="center"
           justify="space-evenly"
-          ml={10}
+          ml={4}
           textAlign="center"
         >
-          <Heading as="h1" size="md" letterSpacing={"-.1rem"} ml={3}>
+          <Heading as="h1" size="md" letterSpacing={"-.1rem"}>
             <NextLink href="/">
               <Link>Categories</Link>
             </NextLink>
