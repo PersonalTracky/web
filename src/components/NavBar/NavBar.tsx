@@ -93,7 +93,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
           <div>
             <Image
               whileTap={{ scale: 0.9 }}
-              src="/logo.svg"
+              src="/Logo.svg"
               alt="logo"
               height={65}
               width={72}
