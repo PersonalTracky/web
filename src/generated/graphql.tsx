@@ -14,25 +14,15 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  notes: PaginatedNotes;
   ping: Scalars['String'];
   me?: Maybe<User>;
-  notes: PaginatedNotes;
 };
 
 
 export type QueryNotesArgs = {
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['Float'];
-  username: Scalars['String'];
-  email: Scalars['String'];
-  profilePictureUrl: Scalars['String'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
 
 export type PaginatedNotes = {
@@ -50,16 +40,42 @@ export type Note = {
   creatorId: Scalars['Float'];
 };
 
+export type User = {
+  __typename?: 'User';
+  id: Scalars['Float'];
+  username: Scalars['String'];
+  email: Scalars['String'];
+  profilePictureUrl: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createNote: Note;
+  updateNote?: Maybe<Note>;
+  deleteNote: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   changePassword: UserResponse;
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
-  createNote: Note;
-  updateNote?: Maybe<Note>;
-  deleteNote: Scalars['Boolean'];
+};
+
+
+export type MutationCreateNoteArgs = {
+  input: NoteInput;
+};
+
+
+export type MutationUpdateNoteArgs = {
+  text: Scalars['String'];
+  id: Scalars['Int'];
+};
+
+
+export type MutationDeleteNoteArgs = {
+  id: Scalars['Float'];
 };
 
 
@@ -84,20 +100,8 @@ export type MutationLoginArgs = {
   usernameOrEmail: Scalars['String'];
 };
 
-
-export type MutationCreateNoteArgs = {
-  input: NoteInput;
-};
-
-
-export type MutationUpdateNoteArgs = {
+export type NoteInput = {
   text: Scalars['String'];
-  id: Scalars['Int'];
-};
-
-
-export type MutationDeleteNoteArgs = {
-  id: Scalars['Float'];
 };
 
 export type UserResponse = {
@@ -117,10 +121,6 @@ export type UsernamePasswordInput = {
   username: Scalars['String'];
   password: Scalars['String'];
   profilePictureUrl: Scalars['String'];
-};
-
-export type NoteInput = {
-  text: Scalars['String'];
 };
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -144,7 +144,7 @@ export type ChangePasswordMutation = (
 );
 
 export type CreateNoteMutationVariables = Exact<{
-  input: NoteInput;
+  text: Scalars['String'];
 }>;
 
 
@@ -152,7 +152,7 @@ export type CreateNoteMutation = (
   { __typename?: 'Mutation' }
   & { createNote: (
     { __typename?: 'Note' }
-    & Pick<Note, 'id' | 'createdAt' | 'updatedAt' | 'text' | 'creatorId'>
+    & Pick<Note, 'id' | 'text' | 'createdAt' | 'creatorId'>
   ) }
 );
 
@@ -266,12 +266,11 @@ export function useChangePasswordMutation() {
   return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
 };
 export const CreateNoteDocument = gql`
-    mutation CreateNote($input: NoteInput!) {
-  createNote(input: $input) {
+    mutation CreateNote($text: String!) {
+  createNote(input: {text: $text}) {
     id
-    createdAt
-    updatedAt
     text
+    createdAt
     creatorId
   }
 }

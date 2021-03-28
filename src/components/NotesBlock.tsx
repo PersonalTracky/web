@@ -1,12 +1,23 @@
-import { Button, Flex, Heading, Stack } from "@chakra-ui/core";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Stack,
+  useDisclosure,
+} from "@chakra-ui/core";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useNotesQuery } from "../generated/graphql";
+import { useCreateNoteMutation, useNotesQuery } from "../generated/graphql";
+import { InputField } from "./InputField";
 import NoteCard from "./NoteCard";
 import { Wrapper } from "./Wrapper";
 
 interface NoteBlockProps {}
 
 const NoteBlock: React.FC<NoteBlockProps> = ({}) => {
+  const router = useRouter();
   const [variables, setVariables] = useState({
     limit: 3,
     cursor: null as null | string,
@@ -14,6 +25,8 @@ const NoteBlock: React.FC<NoteBlockProps> = ({}) => {
   const [{ data, error, fetching }] = useNotesQuery({
     variables,
   });
+  const [, createNote] = useCreateNoteMutation();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (!fetching && !data) {
     return (
@@ -36,6 +49,7 @@ const NoteBlock: React.FC<NoteBlockProps> = ({}) => {
             _hover={{ bg: "gray.500" }}
             color="white"
             onClick={() => {
+              console.log(data.notes.notes[data.notes.notes.length - 1].createdAt);
               setVariables({
                 limit: variables.limit,
                 cursor: data.notes.notes[data.notes.notes.length - 1].createdAt,
@@ -47,6 +61,38 @@ const NoteBlock: React.FC<NoteBlockProps> = ({}) => {
           </Button>
         ) : null}
       </Flex>
+      <Formik
+        initialValues={{ text: "" }}
+        onSubmit={async (values) => {
+          await createNote(values);
+        }}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <Box mt={4}>
+              <InputField
+                textarea
+                name="text"
+                placeholder="text..."
+                label="Note"
+                width={400}
+              />
+            </Box>
+            <Button
+              mt={4}
+              type="submit"
+              isLoading={isSubmitting}
+              bg="gray.800"
+              border="1px"
+              _hover={{ bg: "gray.500" }}
+              color="white"
+              mb={10}
+            >
+              Create
+            </Button>
+          </Form>
+        )}
+      </Formik>
       {!data && fetching ? (
         <div>Loading...</div>
       ) : (
