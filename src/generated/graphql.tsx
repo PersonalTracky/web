@@ -19,16 +19,9 @@ export type Query = {
   me?: Maybe<User>;
 };
 
-
-export type QueryNotesArgs = {
-  cursor?: Maybe<Scalars['String']>;
-  limit: Scalars['Int'];
-};
-
 export type PaginatedNotes = {
   __typename?: 'PaginatedNotes';
   notes: Array<Note>;
-  hasMore: Scalars['Boolean'];
 };
 
 export type Note = {
@@ -227,17 +220,13 @@ export type MeQuery = (
   )> }
 );
 
-export type NotesQueryVariables = Exact<{
-  cursor?: Maybe<Scalars['String']>;
-  limit: Scalars['Int'];
-}>;
+export type NotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type NotesQuery = (
   { __typename?: 'Query' }
   & { notes: (
     { __typename?: 'PaginatedNotes' }
-    & Pick<PaginatedNotes, 'hasMore'>
     & { notes: Array<(
       { __typename?: 'Note' }
       & Pick<Note, 'id' | 'text' | 'createdAt'>
@@ -349,14 +338,13 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
 export const NotesDocument = gql`
-    query Notes($cursor: String, $limit: Int!) {
-  notes(cursor: $cursor, limit: $limit) {
+    query Notes {
+  notes {
     notes {
       id
       text
       createdAt
     }
-    hasMore
   }
 }
     `;

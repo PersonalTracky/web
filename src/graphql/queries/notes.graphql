@@ -1,10 +1,9 @@
-query Notes($cursor: String, $limit: Int!) {
-  notes(cursor: $cursor, limit: $limit) {
+query Notes {
+  notes {
     notes {
       id
       text
       createdAt
     }
-    hasMore
   }
 }

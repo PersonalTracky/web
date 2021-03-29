@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Stack,
-  useDisclosure,
-} from "@chakra-ui/core";
+import { Box, Button, Flex, Heading, Stack } from "@chakra-ui/core";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -18,15 +11,8 @@ interface NoteBlockProps {}
 
 const NoteBlock: React.FC<NoteBlockProps> = ({}) => {
   const router = useRouter();
-  const [variables, setVariables] = useState({
-    limit: 3,
-    cursor: null as null | string,
-  });
-  const [{ data, error, fetching }] = useNotesQuery({
-    variables,
-  });
+  const [{ data, error, fetching }] = useNotesQuery();
   const [, createNote] = useCreateNoteMutation();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (!fetching && !data) {
     return (
@@ -40,31 +26,12 @@ const NoteBlock: React.FC<NoteBlockProps> = ({}) => {
     <Wrapper mx="2vh">
       <Flex alignItems="center" justify="flex-start">
         <Heading mb={5}>Notes</Heading>
-        {data && data.notes.hasMore ? (
-          <Button
-            ml={40}
-            type="submit"
-            bg="gray.800"
-            border="1px"
-            _hover={{ bg: "gray.500" }}
-            color="white"
-            onClick={() => {
-              console.log(data.notes.notes[data.notes.notes.length - 1].createdAt);
-              setVariables({
-                limit: variables.limit,
-                cursor: data.notes.notes[data.notes.notes.length - 1].createdAt,
-              });
-            }}
-            isLoading={fetching}
-          >
-            Load more
-          </Button>
-        ) : null}
       </Flex>
       <Formik
         initialValues={{ text: "" }}
         onSubmit={async (values) => {
           await createNote(values);
+          router.reload();
         }}
       >
         {({ isSubmitting }) => (

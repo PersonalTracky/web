@@ -1,10 +1,10 @@
-import { cacheExchange, Resolver, Cache } from "@urql/exchange-graphcache";
+import { Cache, cacheExchange } from "@urql/exchange-graphcache";
+import { simplePagination } from "@urql/exchange-graphcache/extras";
 import Router from "next/router";
 import {
   dedupExchange,
   Exchange,
-  fetchExchange,
-  stringifyVariables,
+  fetchExchange
 } from "urql";
 import { pipe, tap } from "wonka";
 import {
@@ -12,7 +12,7 @@ import {
   LogoutMutation,
   MeDocument,
   MeQuery,
-  RegisterMutation,
+  RegisterMutation
 } from "../generated/graphql";
 import { isServer } from "../util/isServer";
 import { updateQueryWrapper } from "./updateQueryWrapper";
@@ -26,42 +26,6 @@ const errorExchange: Exchange = ({ forward }) => (ops$) => {
       }
     })
   );
-};
-
-const cursorPagination = (): Resolver => {
-  return (_parent, fieldArgs, cache, info) => {
-    const { parentKey: entityKey, fieldName } = info;
-    const allFields = cache.inspectFields(entityKey);
-    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName);
-    const size = fieldInfos.length;
-    if (size === 0) {
-      return undefined;
-    }
-
-    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
-    const isItInTheCache = cache.resolve(
-      cache.resolveFieldByKey(entityKey, fieldKey) as string,
-      "notes"
-    );
-    info.partial = !isItInTheCache;
-    let hasMore = true;
-    const results: string[] = [];
-    fieldInfos.forEach((fi) => {
-      const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string;
-      const data = cache.resolve(key, "notes") as string[];
-      const _hasMore = cache.resolve(key, "hasMore");
-      if (!_hasMore) {
-        hasMore = _hasMore as boolean;
-      }
-      results.push(...data);
-    });
-
-    return {
-      __typename: "PaginatedNotes",
-      hasMore,
-      notes: results,
-    };
-  };
 };
 
 function invalidateAllNotes(cache: Cache) {
@@ -90,14 +54,6 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
     exchanges: [
       dedupExchange,
       cacheExchange({
-        keys: {
-          PaginatedNotes: () => null,
-        },
-        resolvers: {
-          Query: {
-            notes: cursorPagination(),
-          },
-        },
         updates: {
           Mutation: {
             login: (_result, args, cache, info) => {
@@ -109,6 +65,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                   if (result.login.errors) {
                     return query;
                   } else {
+                    invalidateAllNotes(cache);
                     return {
                       me: result.login.user,
                     };
@@ -128,6 +85,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                   if (result.register.errors) {
                     return query;
                   } else {
+                    invalidateAllNotes(cache);
                     return {
                       me: result.register.user,
                     };
@@ -136,6 +94,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
               );
             },
             logout: (_result, args, cache, info) => {
+              invalidateAllNotes(cache);
               updateQueryWrapper<LogoutMutation, MeQuery>(
                 cache,
                 { query: MeDocument },
